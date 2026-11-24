@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>مولّد أيقونات التشغيل الذكي (Maskable Icons)</title>
+    <style>
+      :root {
+        --brand-red: #ED1C24;
+        --brand-orange: #F7941D;
+        --brand-charcoal: #58595B;
+        --brand-bg: #F8F8F9;
+        --brand-white: #FFFFFF;
+        --brand-border: #E4E4E7;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 24px 16px;
+        font-family: 'Cairo', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+        background: var(--brand-bg);
+        color: var(--brand-charcoal);
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: var(--brand-white);
+        border: 1px solid var(--brand-border);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 4px 18px rgba(88, 89, 91, 0.08);
+      }
+
+      header {
+        border-bottom: 1px solid var(--brand-border);
+        padding-bottom: 16px;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        color: var(--brand-red);
+        font-size: 22px;
+      }
+
+      p.subtitle {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+        background: var(--brand-bg);
+        border: 1px solid var(--brand-border);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+
+      .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .btn {
+        appearance: none;
+        border: none;
+        border-radius: 12px;
+        padding: 11px 18px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.2s ease, transform 0.1s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn:active {
+        transform: scale(0.98);
+      }
+
+      .btn-primary {
+        background: var(--brand-red);
+        color: var(--brand-white);
+      }
+
+      .btn-secondary {
+        background: var(--brand-orange);
+        color: var(--brand-white);
+      }
+
+      .btn-outline {
+        background: var(--brand-white);
+        color: var(--brand-charcoal);
+        border: 1px solid var(--brand-border);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .status {
+        margin-bottom: 18px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 700;
+        background: #FFF7ED;
+        border: 1px solid var(--brand-orange);
+        color: var(--brand-charcoal);
+      }
+
+      .status.error {
+        background: #FEF2F2;
+        border-color: var(--brand-red);
+        color: var(--brand-red);
+      }
+
+      .previews {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 18px;
+      }
+
+      .preview-card {
+        border: 1px solid var(--brand-border);
+        border-radius: 16px;
+        padding: 16px;
+        text-align: center;
+        background: var(--brand-bg);
+      }
+
+      .preview-card h2 {
+        margin: 0 0 12px;
+        font-size: 15px;
+        color: var(--brand-charcoal);
+      }
+
+      .canvas-wrap {
+        position: relative;
+        display: inline-block;
+        background: var(--brand-white);
+        border: 1px dashed var(--brand-border);
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 12px;
+      }
+
+      .canvas-wrap canvas {
+        display: block;
+        width: 192px;
+        height: 192px;
+      }
+
+      .safe-ring {
+        position: absolute;
+        inset: 10%;
+        border: 2px dashed rgba(237, 28, 36, 0.55);
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .actions-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .hint {
+        margin-top: 16px;
+        font-size: 12px;
+        line-height: 1.7;
+        color: #6B6C6E;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>مولّد أيقونات تطبيق «التشغيل الذكي» (Maskable Icons)</h1>
+        <p class="subtitle">
+          تقرأ هذه الأداة ملف <strong>logo.png</strong> وتقوم بقص الهوامش الفارغة وتوسيط الشعار تلقائياً داخل مربع أبيض نظيف بهوامش أمان
+          <strong>15%</strong> لتوليد <strong>icon-192.png</strong> و <strong>icon-512.png</strong> المتوافقة مع أندرويد و PWABuilder.
+        </p>
+      </header>
+
+      <div id="statusBox" class="status">جاري تحميل الشعار الافتراضي (logo.png)...</div>
+
+      <div class="controls">
+        <div class="control-group">
+          <label for="fileInput">أو اختر ملف الشعار يدوياً (logo.png):</label>
+          <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" />
+        </div>
+
+        <div class="control-group">
+          <label for="paddingRange">هامش الأمان (Padding): <span id="paddingVal">15%</span></label>
+          <input id="paddingRange" type="range" min="10" max="25" step="1" value="15" />
+        </div>
+
+        <label class="control-group" style="flex-direction: row; align-items: center; gap: 8px; cursor: pointer;">
+          <input id="autoCropCheck" type="checkbox" checked />
+          <span>قص الهوامش الشفافة/البيضاء تلقائياً قبل التوسيط</span>
+        </label>
+
+        <label class="control-group" style="flex-direction: row; align-items: center; gap: 8px; cursor: pointer;">
+          <input id="showRingCheck" type="checkbox" checked />
+          <span>إظهار دائرة الأمان التكيفية (للمعاينة فقط)</span>
+        </label>
+      </div>
+
+      <div class="previews">
+        <div class="preview-card">
+          <h2>أيقونة 192 × 192 (icon-192.png)</h2>
+          <div class="canvas-wrap">
+            <canvas id="canvas192" width="192" height="192"></canvas>
+            <div class="safe-ring" id="ring192"></div>
+          </div>
+          <div>
+            <button id="dl192" class="btn btn-primary" disabled>تحميل icon-192.png</button>
+          </div>
+        </div>
+
+        <div class="preview-card">
+          <h2>أيقونة 512 × 512 (icon-512.png)</h2>
+          <div class="canvas-wrap">
+            <canvas id="canvas512" width="512" height="512"></canvas>
+            <div class="safe-ring" id="ring512"></div>
+          </div>
+          <div>
+            <button id="dl512" class="btn btn-secondary" disabled>تحميل icon-512.png</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button id="dlBoth" class="btn btn-primary" disabled>تحميل الأيقونتين معاً (192 + 512)</button>
+        <button id="reloadLogo" class="btn btn-outline">إعادة تحميل /logo.png</button>
+      </div>
+
+      <p class="hint">
+        ملاحظة: الخط الأحمر المتقطع في المعاينة هو دليل بصري فقط لمساحة الأمان التكيفية في نظام أندرويد (لا يظهر داخل الملفات المحمّلة).
+        بعد التحميل، ضع <strong>icon-192.png</strong> و <strong>icon-512.png</strong> داخل مجلد <code>public/</code> في المشروع (أو المجلد الرئيسي قبل الرفع إلى Netlify).
+      </p>
+    </div>
+
+    <script>
+      const canvas192 = document.getElementById('canvas192');
+      const canvas512 = document.getElementById('canvas512');
+      const statusBox = document.getElementById('statusBox');
+      const fileInput = document.getElementById('fileInput');
+      const paddingRange = document.getElementById('paddingRange');
+      const paddingVal = document.getElementById('paddingVal');
+      const autoCropCheck = document.getElementById('autoCropCheck');
+      const showRingCheck = document.getElementById('showRingCheck');
+      const ring192 = document.getElementById('ring192');
+      const ring512 = document.getElementById('ring512');
+      const dl192 = document.getElementById('dl192');
+      const dl512 = document.getElementById('dl512');
+      const dlBoth = document.getElementById('dlBoth');
+      const reloadLogo = document.getElementById('reloadLogo');
+
+      let loadedImage = null;
+
+      function setStatus(message, isError = false) {
+        statusBox.textContent = message;
+        statusBox.className = isError ? 'status error' : 'status';
+      }
+
+      function computeTrimmedBounds(img) {
+        const off = document.createElement('canvas');
+        off.width = img.naturalWidth || img.width;
+        off.height = img.naturalHeight || img.height;
+        const ctx = off.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        const { data, width, height } = ctx.getImageData(0, 0, off.width, off.height);
+        let minX = width;
+        let minY = height;
+        let maxX = -1;
+        let maxY = -1;
+
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            const idx = (y * width + x) * 4;
+            const r = data[idx];
+            const g = data[idx + 1];
+            const b = data[idx + 2];
+            const a = data[idx + 3];
+            const isNearWhite = r > 248 && g > 248 && b > 248;
+            if (a > 12 && !isNearWhite) {
+              if (x < minX) minX = x;
+              if (y < minY) minY = y;
+              if (x > maxX) maxX = x;
+              if (y > maxY) maxY = y;
+            }
+          }
+        }
+
+        if (maxX < minX || maxY < minY) {
+          return { sx: 0, sy: 0, sw: width, sh: height };
+        }
+        return {
+          sx: minX,
+          sy: minY,
+          sw: maxX - minX + 1,
+          sh: maxY - minY + 1,
+        };
+      }
+
+      function renderToCanvas(canvas, img) {
+        const size = canvas.width;
+        const ctx = canvas.getContext('2d');
+        const paddingRatio = Number(paddingRange.value) / 100;
+
+        // Clean pure white square background for adaptive/maskable icons
+        ctx.clearRect(0, 0, size, size);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, size, size);
+
+        const bounds = autoCropCheck.checked
+          ? computeTrimmedBounds(img)
+          : { sx: 0, sy: 0, sw: img.naturalWidth || img.width, sh: img.naturalHeight || img.height };
+
+        const safeBox = size * (1 - paddingRatio * 2);
+        const scale = Math.min(safeBox / bounds.sw, safeBox / bounds.sh);
+        const drawW = bounds.sw * scale;
+        const drawH = bounds.sh * scale;
+        const drawX = (size - drawW) / 2;
+        const drawY = (size - drawH) / 2;
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, bounds.sx, bounds.sy, bounds.sw, bounds.sh, drawX, drawY, drawW, drawH);
+      }
+
+      function renderAll() {
+        paddingVal.textContent = `${paddingRange.value}%`;
+        ring192.style.display = showRingCheck.checked ? 'block' : 'none';
+        ring512.style.display = showRingCheck.checked ? 'block' : 'none';
+        if (!loadedImage) return;
+
+        renderToCanvas(canvas192, loadedImage);
+        renderToCanvas(canvas512, loadedImage);
+        dl192.disabled = false;
+        dl512.disabled = false;
+        dlBoth.disabled = false;
+      }
+
+      function downloadCanvas(canvas, filename) {
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
+
+      function loadDefaultLogo() {
+        setStatus('جاري تحميل الشعار من logo.png...');
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          loadedImage = img;
+          renderAll();
+          setStatus('تم تحميل logo.png وتجهيز الأيقونات بهوامش أمان 15% بنجاح — يمكنك التحميل الآن.');
+        };
+        img.onerror = () => {
+          setStatus('تعذر تحميل /logo.png تلقائياً — يرجى اختيار ملف الشعار يدوياً من جهازك أعلاه.', true);
+        };
+        img.src = `./logo.png?v=${Date.now()}`;
+      }
+
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            loadedImage = img;
+            renderAll();
+            setStatus(`تم تحميل الملف (${file.name}) وتوسيطه تلقائياً بهوامش أمان ${paddingRange.value}%.`);
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      paddingRange.addEventListener('input', renderAll);
+      autoCropCheck.addEventListener('change', renderAll);
+      showRingCheck.addEventListener('change', renderAll);
+      reloadLogo.addEventListener('click', loadDefaultLogo);
+
+      dl192.addEventListener('click', () => downloadCanvas(canvas192, 'icon-192.png'));
+      dl512.addEventListener('click', () => downloadCanvas(canvas512, 'icon-512.png'));
+      dlBoth.addEventListener('click', () => {
+        downloadCanvas(canvas192, 'icon-192.png');
+        setTimeout(() => downloadCanvas(canvas512, 'icon-512.png'), 250);
+      });
+
+      loadDefaultLogo();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Official Unified Brand Palette (التشغيل الذكي – المذاق اليمني) */
+    --brand-red: #ED1C24;
+    --brand-red-dark: #C8151C;
+    --brand-orange: #F7941D;
+    --brand-white: #FFFFFF;
+    --brand-gray-light: #E4E4E7;
+    --brand-surface-neutral: #F8F8F9;
+    --brand-charcoal: #58595B;
+
+    /* Shadow & Radius Tokens */
+    --card-shadow: 0 2px 10px rgba(88, 89, 91, 0.06);
+    --card-shadow-hover: 0 4px 16px rgba(237, 28, 36, 0.10);
+  }
+
+  html {
+    direction: rtl;
+    font-family: 'IBM Plex Sans Arabic', 'Cairo', system-ui, sans-serif;
+    background-color: var(--brand-surface-neutral);
+    color: var(--brand-charcoal);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--brand-surface-neutral);
+    color: var(--brand-charcoal);
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button, a, input, select, textarea {
+    touch-action: manipulation;
+  }
+
+  /* Prevent accidental mobile Safari/Chrome auto-zoom when focusing form inputs */
+  @media (max-width: 768px) {
+    input:not([type='checkbox']):not([type='radio']):not([type='range']),
+    select,
+    textarea {
+      font-size: 16px;
+    }
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Cairo', 'IBM Plex Sans Arabic', system-ui, sans-serif;
+    text-wrap: balance;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .font-mono-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Unified Design System Component Primitives */
+@layer components {
+  .app-card {
+    background-color: var(--brand-white);
+    border: 1px solid var(--brand-gray-light);
+    border-radius: 1.25rem;
+    box-shadow: var(--card-shadow);
+  }
+
+  .app-card-interactive {
+    background-color: var(--brand-white);
+    border: 1px solid var(--brand-gray-light);
+    border-radius: 1.25rem;
+    box-shadow: var(--card-shadow);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  }
+
+  .app-card-interactive:hover {
+    border-color: var(--brand-red);
+    box-shadow: var(--card-shadow-hover);
+  }
+
+  .app-card-urgent {
+    background-color: var(--brand-white);
+    border: 1.5px solid var(--brand-red);
+    border-radius: 1.25rem;
+    box-shadow: var(--card-shadow);
+  }
+
+  .app-banner-urgent {
+    background-color: var(--brand-red-dark);
+    color: var(--brand-white);
+    border-radius: 1.5rem;
+    box-shadow: var(--card-shadow);
+  }
+
+  .app-btn-primary {
+    background-color: var(--brand-red);
+    color: var(--brand-white);
+    border-radius: 1rem;
+    font-weight: 700;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+  }
+
+  .app-btn-primary:hover:not(:disabled) {
+    background-color: var(--brand-red-dark);
+  }
+
+  .app-btn-secondary {
+    background-color: var(--brand-orange);
+    color: var(--brand-white);
+    border-radius: 1rem;
+    font-weight: 700;
+    transition: opacity 0.2s ease;
+  }
+
+  .app-btn-secondary:hover:not(:disabled) {
+    opacity: 0.92;
+  }
+
+  .app-btn-outline {
+    background-color: var(--brand-white);
+    color: var(--brand-charcoal);
+    border: 1px solid var(--brand-gray-light);
+    border-radius: 1rem;
+    font-weight: 700;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .app-btn-outline:hover:not(:disabled) {
+    border-color: var(--brand-red);
+    color: var(--brand-red);
+  }
+
+  .app-input {
+    background-color: var(--brand-white);
+    color: var(--brand-charcoal);
+    border: 1px solid var(--brand-gray-light);
+    border-radius: 1rem;
+    transition: border-color 0.2s ease;
+  }
+
+  .app-input:focus,
+  .app-input:focus-within {
+    outline: none;
+    border-color: var(--brand-red);
+  }
+}
+
+/* Safe area padding for mobile PWA / Capacitor */
+.pb-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body {
+    background: #FFFFFF !important;
+    color: #58595B !important;
+  }
+}

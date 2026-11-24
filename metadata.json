@@ -1,0 +1,6 @@
+{
+  "name": "التشغيل الذكي – مطعم المذاق اليمني",
+  "description": "نظام متابعة الطلبات المتعثرة داخل مطعم المذاق اليمني، وتحديد القسم المسؤول عن التعثر، وإيصال البلاغات والتصعيد والتقارير التشغيلية.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
